@@ -18,8 +18,10 @@ export default function EditProfile() {
       setError('');
       const username = String(formData.get('username') ?? '').trim();
 
+      // 1. Відправляємо новий username на бекенд
       const updatedUser = await updateMe({ username });
 
+      // 2. Оновлюємо користувача в Zustand-сторі
       setUser(updatedUser);
 
       // 3. Повертаємось на сторінку профілю
@@ -33,6 +35,7 @@ export default function EditProfile() {
     router.push('/profile');
   };
 
+  // Поки AuthProvider не завантажив користувача в стор, показуємо заглушку
   if (!user) {
     return <main className={css.mainContent}>Loading...</main>;
   }

@@ -20,6 +20,7 @@ const initialDraft: NoteDraft = {
   tag: 'Todo',
 };
 
+// persist зберігає чернетку в localStorage, щоб вона не губилась при перезавантаженні
 export const useNoteStore = create<NoteStore>()(
   persist(
     (set) => ({

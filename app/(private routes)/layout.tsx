@@ -5,10 +5,9 @@ import { useRouter } from 'next/navigation';
 
 type Props = {
   children: React.ReactNode;
-  modal?: React.ReactNode;
 };
 
-export default function PrivateLayout({ children, modal }: Props) {
+export default function PrivateLayout({ children }: Props) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -17,10 +16,5 @@ export default function PrivateLayout({ children, modal }: Props) {
     setLoading(false);
   }, [router]);
 
-  return (
-    <>
-      {loading ? <div>Loading...</div> : children}
-      {modal}
-    </>
-  );
+  return <>{loading ? <div>Loading...</div> : children}</>;
 }

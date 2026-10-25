@@ -8,6 +8,7 @@ type AuthStore = {
   clearIsAuthenticated: () => void;
 };
 
+// Подвійні дужки після create<AuthStore>() потрібні для коректного виведення типів
 export const useAuthStore = create<AuthStore>()((set) => ({
   user: null,
   isAuthenticated: false,

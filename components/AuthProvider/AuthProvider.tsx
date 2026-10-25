@@ -17,12 +17,15 @@ export default function AuthProvider({ children }: Props) {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        // 1. Перевіряємо, чи сесія валідна
         const isAuthenticated = await checkSession();
 
         if (isAuthenticated) {
+          // 2. Сесія валідна — отримуємо дані користувача і кладемо в стор
           const user = await getMe();
           setUser(user);
         } else {
+          // 3. Сесія невалідна — очищаємо стор
           clearIsAuthenticated();
         }
       } catch {

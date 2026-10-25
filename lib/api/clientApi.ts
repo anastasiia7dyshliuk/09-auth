@@ -37,6 +37,7 @@ export const fetchNotes = async (
     params: {
       page,
       perPage,
+      // порожні параметри не відправляємо на бекенд
       ...(search ? { search } : {}),
       ...(tag ? { tag } : {}),
     },
@@ -73,6 +74,8 @@ export const logout = async (): Promise<void> => {
   await api.post('/auth/logout');
 };
 
+// Бекенд повертає об'єкт користувача, якщо сесія валідна, або порожню відповідь (200 без тіла)
+// Роут /api/auth/session повертає { success: true | false }
 interface SessionResponse {
   success: boolean;
 }

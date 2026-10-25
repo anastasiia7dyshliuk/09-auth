@@ -8,9 +8,6 @@ import SearchBox from '@/components/SearchBox/SearchBox';
 import Pagination from '@/components/Pagination/Pagination';
 import NoteList from '@/components/NoteList/NoteList';
 import css from '@/components/NotesPage/NotesPage.module.css';
-import tagsCss from './NotesTags.module.css';
-
-const TAGS = ['all', 'Todo', 'Work', 'Personal', 'Meeting', 'Shopping'];
 
 type Props = {
   tag?: string;
@@ -44,18 +41,6 @@ export default function NotesClient({ tag }: Props) {
           Create note +
         </Link>
       </div>
-
-      <nav className={tagsCss.tags} aria-label="Tags">
-        {TAGS.map((item) => (
-          <Link
-            key={item}
-            href={`/notes/filter/${item}`}
-            className={tagsCss.tagLink}
-          >
-            {item === 'all' ? 'All notes' : item}
-          </Link>
-        ))}
-      </nav>
 
       {isLoading && <p>Loading, please wait...</p>}
       {isError && <p>Something went wrong.</p>}

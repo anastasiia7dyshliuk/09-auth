@@ -25,6 +25,7 @@ export default async function NotesPage({ params }: Props) {
   const { slug } = await params;
   const tag = slug[0] === 'all' ? undefined : slug[0];
 
+  // SSR: попередньо завантажуємо першу сторінку, щоб передати її клієнту
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['notes', { page: 1, search: '', tag }],

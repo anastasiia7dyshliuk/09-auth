@@ -4,6 +4,7 @@ import type { Note } from '@/types/note';
 import type { User } from '@/types/user';
 import type { FetchNotesParams, FetchNotesResponse } from './clientApi';
 
+// На сервері браузер не додає куки автоматично, тому передаємо їх у headers вручну
 const getCookieHeader = async () => {
   const cookieStore = await cookies();
   return { Cookie: cookieStore.toString() };
@@ -38,6 +39,7 @@ export const getMe = async (): Promise<User> => {
   return data;
 };
 
+// Повертаємо повну відповідь (не лише data), бо proxy потрібні заголовки set-cookie
 export const checkSession = async () => {
   const headers = await getCookieHeader();
   return api.get<{ success: boolean }>('/auth/session', { headers });

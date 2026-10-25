@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Profile() {
-
+  // Серверний компонент: дані беремо через serverApi (з кукі у headers)
   const user = await getMe();
 
   return (
