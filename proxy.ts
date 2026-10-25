@@ -1,5 +1,6 @@
+
 import { NextRequest, NextResponse } from 'next/server';
-import { parse } from 'cookie';
+import { parseSetCookie } from 'cookie';
 import { checkSession } from './lib/api/serverApi';
 
 const privateRoutes = ['/profile', '/notes'];
@@ -18,34 +19,43 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith(route),
   );
 
-  // 1. Немає accessToken
   if (!accessToken) {
-    // 1.1 Є refreshToken — пробуємо оновити сесію
     if (refreshToken) {
       const data = await checkSession();
       const setCookie = data.headers['set-cookie'];
 
       if (setCookie) {
-        const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
+        const cookieArray = Array.isArray(setCookie)
+          ? setCookie
+          : [setCookie];
 
-        // Сесію оновлено: готуємо відповідь і записуємо нові токени в куки
         const response = isPublicRoute
-          ? NextResponse.redirect(new URL('/profile', request.url))
+          ? NextResponse.redirect(new URL('/', request.url))
           : NextResponse.next();
 
         for (const cookieStr of cookieArray) {
-          const parsed = parse(cookieStr);
+          const parsed = parseSetCookie(cookieStr);
+
+          if (!parsed) continue;
+
           const options = {
-            expires: parsed.Expires ? new Date(parsed.Expires) : undefined,
-            path: parsed.Path,
-            maxAge: Number(parsed['Max-Age']),
+            expires: parsed.expires,
+            maxAge: parsed.maxAge,
+            domain: parsed.domain,
+            path: parsed.path,
+            httpOnly: parsed.httpOnly,
+            secure: parsed.secure,
+            sameSite: parsed.sameSite,
+            partitioned: parsed.partitioned,
+            priority: parsed.priority,
           };
 
-          if (parsed.accessToken) {
-            response.cookies.set('accessToken', parsed.accessToken, options);
-          }
-          if (parsed.refreshToken) {
-            response.cookies.set('refreshToken', parsed.refreshToken, options);
+          if (
+            (parsed.name === 'accessToken' ||
+              parsed.name === 'refreshToken') &&
+            parsed.value !== undefined
+          ) {
+            response.cookies.set(parsed.name, parsed.value, options);
           }
         }
 
@@ -53,18 +63,17 @@ export async function proxy(request: NextRequest) {
       }
     }
 
-    // 1.2 Токенів немає або оновлення не вдалося
     if (isPublicRoute) {
       return NextResponse.next();
     }
+
     if (isPrivateRoute) {
       return NextResponse.redirect(new URL('/sign-in', request.url));
     }
   }
 
-  // 2. accessToken є
   if (isPublicRoute) {
-    return NextResponse.redirect(new URL('/profile', request.url));
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   return NextResponse.next();
