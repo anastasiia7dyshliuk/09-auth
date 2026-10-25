@@ -1,0 +1,14 @@
+.main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.title {
+  margin: 0 0 16px;
+}
+
+.description {
+  margin: 0;
+}
